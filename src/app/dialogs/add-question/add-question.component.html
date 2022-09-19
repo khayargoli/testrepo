@@ -1,0 +1,51 @@
+<h1 mat-dialog-title>Add a new question</h1>
+<div mat-dialog-content>
+    <form #questionForm="ngForm">
+        <mat-form-field appearance="legacy">
+            <mat-label>Select answer format</mat-label>
+            <mat-select name="qformat" (selectionChange)="onAnswerFormatChange($event)" required #qformat="ngModel"
+                [(ngModel)]="questionFormat.answerFormat">
+                <mat-option *ngFor="let format of answerFormats" [value]="format">
+                    {{format}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="qformat.errors?.['required']">Please select a format</mat-error>
+        </mat-form-field>
+
+        <br />
+        <mat-form-field appearance="legacy">
+            <mat-label>Type question here...</mat-label>
+            <input matInput name="question" type="text" [(ngModel)]="questionFormat.question" #question="ngModel"
+                required>
+            <mat-error *ngIf="question.errors?.['required'] && (question.dirty || question.touched)">Please enter a
+                question</mat-error>
+
+        </mat-form-field>
+
+        <div *ngIf="questionFormat.answerFormat == 'Choice'">
+            <div *ngFor="let option of questionFormat.answerOptions; let i = index">
+                <mat-form-field appearance="legacy">
+                    <mat-label>Add answer option #{{i + 1}}</mat-label>
+                    <input [name]="'opt' + i" matInput type="text" [(ngModel)]="option.optionText" #opt="ngModel"
+                        required>
+                    <mat-error *ngIf="opt.errors?.['required'] && (opt.dirty || opt.touched)">Please enter an answer
+                        option</mat-error>
+                </mat-form-field>
+            </div>
+            <button mat-button (click)="addMoreOptions()"
+                [disabled]="questionFormat.answerOptions && questionFormat.answerOptions.length >= 5">+ Add another
+                answer</button>
+
+            <br />
+            <mat-checkbox name="supportOtherAnswer" [(ngModel)]="questionFormat.supportOtherAnswer">Allow user to specify their own answer
+            </mat-checkbox>
+        </div>
+        <br/>
+        <mat-checkbox name="isRequired"  [(ngModel)]="questionFormat.isRequired">This field is required</mat-checkbox>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button mat-dialog-close cdkFocusInitial (click)="submit()"
+        [disabled]="questionForm.invalid">Submit</button>
+</div>

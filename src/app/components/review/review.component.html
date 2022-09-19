@@ -1,0 +1,32 @@
+<mat-card>
+
+    <h1>Review</h1>
+
+
+    <mat-card *ngFor="let answer of allAnswers">
+
+        <h4><b>{{answer.question}}</b></h4>
+
+        <div *ngIf="answer.type == 'Paragraph'">
+            <p>
+                {{answer.answer[0]}}
+            </p>
+        </div>
+
+        <div *ngIf="answer.type == 'Choice'">
+            <div *ngFor="let ans of answer.answer">
+                <mat-label>- {{ans}}</mat-label>
+            </div>
+            <div *ngIf="answer.hasOtherAnswer">
+                <mat-label>- {{answer.otherAnswer}}</mat-label>
+            </div>
+        </div>
+
+   </mat-card>
+
+
+    <br/>
+    <br/>
+    <button mat-raised-button color="primary" (click)="goBack()">Go Back</button>
+
+</mat-card>

@@ -1,0 +1,52 @@
+<mat-card>
+    <form #questionForm="ngForm">
+
+    <mat-card *ngFor="let q of allQuestions; let qIndex = index;" class="card-container">
+        <mat-label>
+            <h3>{{q.question}}{{q.isRequired ? ' *' : ''}}</h3>
+        </mat-label>
+
+        <div *ngIf="q.answerFormat == 'Choice'">
+            <div *ngFor="let option of q.answerOptions;">
+                <mat-checkbox [value]="option.optionText"
+                    (change)="onCheckboxChange($event, qIndex, option.optionText)">{{option.optionText}}
+                </mat-checkbox>
+            </div>
+
+            <div *ngIf="q.supportOtherAnswer">
+                <mat-checkbox name="otherbox'" #other="ngModel" [(ngModel)]="allAnswers[qIndex].hasOtherAnswer">Other
+                </mat-checkbox>
+    
+                <div *ngIf="allAnswers[qIndex].hasOtherAnswer">
+                    <br/>
+                    <mat-form-field appearance="legacy">
+                        <mat-label>Type other answer here...</mat-label>
+                        <textarea matInput [name]="'other' + qIndex"  type="text" [(ngModel)]="allAnswers[qIndex].otherAnswer"
+                            #other="ngModel" required></textarea>
+                        <mat-error *ngIf="other.errors?.['required'] && (other.dirty || other.touched)">Please enter other
+                            answer</mat-error>
+                    </mat-form-field>
+                </div>
+    
+            </div>
+      
+        </div>
+
+        <div *ngIf="q.answerFormat == 'Paragraph'">
+            <mat-form-field appearance="legacy">
+                <mat-label>Type your answer here...</mat-label>
+                <textarea matInput [name]="'answer' + qIndex" type="text" [(ngModel)]="allAnswers[qIndex].answer[0]"
+                    #answer="ngModel" [required]="q.isRequired"></textarea>
+                <mat-error *ngIf="answer.errors?.['required'] && (answer.dirty || answer.touched)">Please enter your
+                    answer</mat-error>
+            </mat-form-field>
+        </div>
+    </mat-card>
+
+    <br />
+    <button mat-raised-button color="primary" (click)="addQuestion()">Add question</button>
+    <button class="gap" mat-raised-button color="primary" (click)="review()" *ngIf="allAnswers.length > 0" [disabled]="!isAllMandatoryFilled()">Review my
+        answers</button>
+
+    </form>
+</mat-card>
